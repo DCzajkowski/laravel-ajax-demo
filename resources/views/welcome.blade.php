@@ -64,6 +64,7 @@
         </style>
 
         <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -79,8 +80,8 @@
             const results = document.querySelector('[data-results]')
 
             const fetchData = _.debounce(async function (search) {
-                const response = await fetch(`/api/users?search=${search}`)
-                const data = await response.json()
+                const response = await axios.get(`/api/users?search=${search}`)
+                const data = response.data
 
                 results.innerHTML = data
                     .map(user => `<li>${user.email}</li>`)
