@@ -62,39 +62,35 @@
                 margin-bottom: 30px;
             }
         </style>
+
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+            <input type="text" data-autocomplete>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+            <br>
 
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div>
+            <ul data-results></ul>
         </div>
+
+        <script>
+            const input = document.querySelector('[data-autocomplete]')
+            const results = document.querySelector('[data-results]')
+
+            const fetchData = _.debounce(async function (search) {
+                const response = await fetch(`/api/users?search=${search}`)
+                const data = await response.json()
+
+                results.innerHTML = data
+                    .map(user => `<li>${user.email}</li>`)
+                    .join('')
+            }, 500)
+
+            input.addEventListener('keyup', e => {
+               fetchData(e.target.value)
+            })
+
+        </script>
     </body>
 </html>
